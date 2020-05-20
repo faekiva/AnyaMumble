@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import Twit from 'twit';
 import Datastore from 'nedb';
+import { User } from './interfaces/User';
 
 const result = dotenv.config({ path: path.resolve(process.cwd(), '.env.twitter') })
 
@@ -37,4 +38,6 @@ export const autoHookConfig = (() => {
 
 export const Twitter = new Twit(config);
 
-export const db = new Datastore({ filename: ".db", autoload: true });
+export const db = new Datastore<User>({ filename: ".db", autoload: true });
+
+export type UserId = string;
