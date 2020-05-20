@@ -2,8 +2,12 @@ import Twit from 'twit';
 const { Autohook } = require('twitter-autohook');
 import './env'
 
-const envVars = [process.env.TWITTER_ACCESS_TOKEN, process.env.TWITTER_CONSUMER_SECRET, process.env.TWITTER_ACCESS_TOKEN, process.env.TWITTER_ACCESS_TOKEN_SECRET, process.env.TWITTER_WEBHOOK_ENV];
-console.log(envVars)
+const envVars = [process.env.TWITTER_ACCESS_TOKEN,
+process.env.TWITTER_CONSUMER_SECRET,
+process.env.TWITTER_ACCESS_TOKEN,
+process.env.TWITTER_ACCESS_TOKEN_SECRET,
+process.env.TWITTER_WEBHOOK_ENV];
+
 if (envVars.length !== envVars.filter(x => typeof x === 'string').length) {
     throw Error("not all needed env vars have been set!")
 }
