@@ -29,10 +29,6 @@ const autoHookConfig = (() => {
 
 const Twitter = new Twit(config);
 
-Twitter.post('statuses/update', { status: 'hello world!' }, function (err, data) {
-    console.log(data)
-});
-
 (async () => {
     const webhook = new Autohook(autoHookConfig);
 
@@ -44,6 +40,10 @@ Twitter.post('statuses/update', { status: 'hello world!' }, function (err, data)
         if (event.direct_message_events) {
             console.log('Something happened:', event.direct_message_events[0])
             console.log('Something happened:', event.direct_message_events[0].message_create.message_data.text)
+
+            Twitter.post('statuses/update', { status: event.direct_message_events[0].message_create.message_data.text }, function (err, data) {
+                console.log(data)
+            });
         }
     }
     );
