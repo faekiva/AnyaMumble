@@ -1,7 +1,8 @@
+import { Twitter } from './startup';
 import { User } from "./interfaces/User";
 import Datastore from 'nedb';
 import { UserId } from "./startup";
-import { DirectMessageEvent } from "./interfaces/DirectMessageEvent";
+import { DirectMessageEvent, MessageCreate, MessageCreateTarget } from "./interfaces/DirectMessageEvent";
 import { isNull } from "util";
 import { InvalidSyntaxException } from "./errors/services-errors";
 
@@ -17,31 +18,47 @@ const getCommand: (dmEvent: DirectMessageEvent) => string = (dmEvent: DirectMess
     return matches[0];
 }
 
-export const runCommand = (dmEvent: DirectMessageEvent) => {
+const getHashtags = (dmEvent: DirectMessageEvent) => dmEvent.message_create.message_data.entities.hashtags;
+
+const getSender = (dmEvent: DirectMessageEvent) => dmEvent.message_create.sender_id;
+
+export const runCommand = (dmEvent: DirectMessageEvent, db: Datastore<User>, dm: DMUser) => {
+    const sender = getSender(dmEvent);
     switch (getCommand(dmEvent)) {
-        case
+        case 'subscribe':
+            getHashtags(dmEvent).forEach((hashtag) => subscribeToChannel(hashtag.text, sender, db, dm))
     }
 }
 
-
 type DMUser = (msg: string, userId: UserId) => void;
 
-export const subscribeToWatchGroup = (watchGroup: string, userId: UserId, db: Datastore<User>, dmUser: DMUser) => {
-    watchGroup = watchGroup.trim();
-    const dm = (msg: string) => dmUser(msg, userId);
-    db.update({ "_id": userId }, { $addToSet: { groups: watchGroup } }, {}, (err) => {
-        dm("Welp, that didn't work");
-        return;
-    });
-    dm(`Subscribed to "${watchGroup}"`);
+const SendTwitterDM = (msg: string, userId: UserId) => {
+    const preppedMessage = {
+        //"event": {
+        target: MessageCreateTarget,
+        message_data: {
+            text: msg
+        },
+        recipient_id: userId
+        //}
+    }
+    Twitter.post("direct_messages/events/new", preppedMessage
 }
 
-export const unsubscribeFromWatchGroup = (watchGroup: string, userId: UserId, db: Datastore<User>, dmUser: DMUser) => {
-    watchGroup = watchGroup.trim();
+export const subscribeToChannel = (channel: string, userId: UserId, db: Datastore<User>, dmUser: DMUser) => {
     const dm = (msg: string) => dmUser(msg, userId);
-    db.update({ "_id": userId }, { $pull: { groups: watchGroup } }, {}, (err) => {
+    db.update({ "_id": userId }, { $addToSet: { groups: channel } }, {}, (err) => {
         dm("Welp, that didn't work");
         return;
     });
-    dm(`Unsubscribed from "${watchGroup}"`);
+    dm(`Subscribed to "${channel}"`);
+}
+
+export const unsubscribeFromChannel = (channel: string, userId: UserId, db: Datastore<User>, dmUser: DMUser) => {
+    const dm = (msg: string) => dmUser(msg, userId);
+    db.update({ "_id": userId }, { $pull: { groups: channel } }, {}, (err) => {
+        dm("Welp, that didn't work");
+        return;
+    });
+    dm(`Unsubscribed from "${channel}"`);
 }

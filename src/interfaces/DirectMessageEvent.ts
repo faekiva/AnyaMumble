@@ -1,17 +1,21 @@
 import { UserId } from "../startup";
 
+//#region interfaces
 export interface DirectMessageEvent {
     type: string,
     id: UserId,
     created_timestamp: string,
-    message_create: MessageCreate
+    message_create: RecievedMessageCreate
 }
 
 export interface MessageCreate {
     target: MessageTarget,
-    sender_id: UserId,
-    source_app_id: string,
     message_data: MessageData
+}
+
+export interface RecievedMessageCreate extends MessageCreate {
+    sender_id: UserId,
+    source_app_id: string
 }
 
 export interface MessageTarget {
@@ -42,3 +46,6 @@ export interface UserMention {
     id_str: UserId,
     indices: number[]
 }
+//#endregion
+
+export const MessageCreateTarget: MessageTarget = { "recipient_id": "message_create" }

@@ -1,4 +1,3 @@
-import Twit from 'twit';
 const { Autohook } = require('twitter-autohook');
 import './startup'
 import { autoHookConfig, Twitter } from './startup';
@@ -23,7 +22,7 @@ import { DirectMessageEvent } from './interfaces/DirectMessageEvent';
         for (let eventIndex = 0; eventIndex < dmEventCount; eventIndex++) {
             const dmEvent = event.direct_message_events[eventIndex] as DirectMessageEvent;
             const message = dmEvent.message_create.message_data.text;
-            console.log('Something happened:', dmEvent])
+            console.log('Something happened:', dmEvent)
             console.log('Something happened:', dmEvent.message_create.message_data.entities)
             console.log('Something happened:', dmEvent.message_create.message_data.entities.hashtags[0].indices)
 
