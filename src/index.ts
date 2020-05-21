@@ -2,6 +2,8 @@ import Twit from 'twit';
 const { Autohook } = require('twitter-autohook');
 import './startup'
 import { autoHookConfig, Twitter } from './startup';
+import { isUndefined } from 'util';
+import { DirectMessageEvent } from './interfaces/DirectMessageEvent';
 
 (async () => {
     const webhook = new Autohook(autoHookConfig);
@@ -11,13 +13,22 @@ import { autoHookConfig, Twitter } from './startup';
 
     // Listens to incoming activity
     webhook.on('event', (event: any) => {
-        if (event.direct_message_events) {
-            const message = event.direct_message_events[0].message_create.message_data.text;
-            console.log('Something happened:', event.direct_message_events[0])
-            console.log('Something happened:', message)
+        let dmEventCount;
+        if (isUndefined(event.direct_message_events)) {
+            dmEventCount = 0;
+        } else {
+            dmEventCount = event.direct_message_events.length;
+        }
+
+        for (let eventIndex = 0; eventIndex < dmEventCount; eventIndex++) {
+            const dmEvent = event.direct_message_events[eventIndex] as DirectMessageEvent;
+            const message = dmEvent.message_create.message_data.text;
+            console.log('Something happened:', dmEvent])
+            console.log('Something happened:', dmEvent.message_create.message_data.entities)
+            console.log('Something happened:', dmEvent.message_create.message_data.entities.hashtags[0].indices)
 
             Twitter.post('statuses/update', { status: message }, function (err, data) {
-                console.log(data)
+                //console.log(data)
             });
         }
     }
