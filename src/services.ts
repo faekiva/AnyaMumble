@@ -42,7 +42,7 @@ const SendTwitterDM = (msg: string, userId: UserId) => {
         recipient_id: userId
         //}
     }
-    Twitter.post("direct_messages/events/new", preppedMessage
+    // Twitter.post("direct_messages/events/new",
 }
 
 export const subscribeToChannel = (channel: string, userId: UserId, db: Datastore<User>, dmUser: DMUser) => {

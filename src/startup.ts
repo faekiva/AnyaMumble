@@ -5,6 +5,7 @@ import Datastore from 'nedb';
 import { User } from './interfaces/User';
 
 const result = dotenv.config({ path: path.resolve(process.cwd(), '.env.twitter') })
+const defaultenv = dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 if (result.error) {
     throw result.error;

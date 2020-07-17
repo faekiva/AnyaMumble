@@ -15,6 +15,7 @@
     "@types/twit": "^2.2.24",
     "dotenv": "^8.2.0",
     "nedb": "^1.8.0",
+    "slack": "^11.0.2",
     "source-map-support": "^0.5.19",
     "twit": "^2.2.11",
     "twitter-autohook": "^1.7.0",
